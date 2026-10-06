@@ -169,7 +169,7 @@ def build_notebook(with_solutions: bool) -> nbf.NotebookNode:
             """
             # Local files first; raw GitHub files are the Colab fallback.
             root = next((p for p in [Path(".."), Path(".")] if (p / "data").exists()), None)
-            raw = "https://raw.githubusercontent.com/Facuriy/agro-data-analysis-hands-on/main"
+            raw = "https://raw.githubusercontent.com/Facuriy/agro-data-analysis-hands-on/v1.0.0"
 
             def table(name):
                 return pd.read_csv(root / "data" / name if root else f"{raw}/data/{name}")
@@ -1389,7 +1389,7 @@ def build_classifier_template() -> nbf.NotebookNode:
             from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, f1_score
 
             root = next((p for p in [Path(".."), Path(".")] if (p / "data").exists()), None)
-            raw = "https://raw.githubusercontent.com/Facuriy/agro-data-analysis-hands-on/main"
+            raw = "https://raw.githubusercontent.com/Facuriy/agro-data-analysis-hands-on/v1.0.0"
 
             # Demo uses the released real teaching predictions.
             source = root / "data" / "cnn_model_outputs.csv" if root else f"{raw}/data/cnn_model_outputs.csv"

@@ -12,7 +12,7 @@ A visual, guided 90-minute practical for agricultural-science students who know 
 - [Expected results](instructor/expected_results.md)
 - [Optional classifier-evaluation template](notebooks/evaluate_any_classifier_template.ipynb)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/main/notebooks/field_to_evidence_student.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v1.0.0/notebooks/field_to_evidence_student.ipynb)
 
 **Student route:** open the Colab badge and choose **Runtime → Run all**. The
 student notebook is a visual lab: four short sections, large figures, and no

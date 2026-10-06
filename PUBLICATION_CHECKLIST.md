@@ -59,5 +59,5 @@
 
 ## Release
 
-- [ ] Create a tagged course release.
-- [ ] Archive the exact commit used in class.
+- [x] Create the tagged course release `v1.0.0`.
+- [x] Archive the exact class commit through the immutable release tag.
