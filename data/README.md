@@ -67,13 +67,9 @@ their date overlap is evidence, not a label embedded only in a figure.
 - No trained model weights.
 - Only two 512 × 512 RGB JPEG previews.
 
-TEACHING_DATA_MANIFEST.json records the approved files and SHA-256 hashes. Run:
-
-~~~bash
-python scripts/privacy_audit.py
-~~~
-
-before publication.
+`TEACHING_DATA_MANIFEST.json` records the approved release files and SHA-256
+hashes. Release verification and rebuild tools are maintained separately from
+the student-facing course repository.
 
 Copyright, attribution, and educational-use terms are recorded in
 [DATA_AND_IMAGE_RIGHTS.md](../DATA_AND_IMAGE_RIGHTS.md).
