@@ -1,0 +1,11 @@
+event_id,event_type,event_label,date,days_after_sowing,display_group,source_category
+E01,crop,Sowing,2020-04-06,0,sowing,agronomic experiment record
+E02,crop_management,Canopy closure + inoculation timing,2020-06-24,79,closure,agronomic experiment record + inoculation documentation
+E03,image,RGB 1,2020-06-26,81,june_overlap,acquisition inventory
+E04,fungicide,Fungicide 1,2020-06-26,81,june_overlap,agronomic fungicide record
+E05,disease,First grade >=2,2020-07-29,114,first_symptom,severity record
+E06,fungicide,Fungicide 2,2020-08-05,121,fungicide_2,agronomic fungicide record
+E07,fungicide,Fungicide 3,2020-09-01,148,fungicide_3,agronomic fungicide record
+E08,image,RGB 2,2020-09-03,150,rgb_2,acquisition inventory
+E09,disease,Severity used in class,2020-09-04,151,severity_class,severity record
+E10,harvest,Harvest,2020-10-23,200,harvest,agronomic harvest record

@@ -1,0 +1,48 @@
+{
+  "artifact_type": "de-identified real-data educational subset",
+  "research_rows_included": 12,
+  "selection_rule": "All 12 Aluco plots; balanced as one plot per treatment in each of four blocks",
+  "selection_status": "Aluco was selected for low Cercospora resistance; all 12 Aluco plots were included, independently of released outcomes",
+  "rights_status": "Owner-authorized educational release; attribution required; complete source data not licensed",
+  "analysis_timing_note": "The 2020-06-26 RGB date is two days after recorded canopy closure/inoculation timing and is the date of the first fungicide application; within-day order is unknown, so early_green_share is not a clean pretreatment baseline",
+  "rgb_dates": [
+    "2020-06-26",
+    "2020-09-03"
+  ],
+  "release_constraints": [
+    "two 512-pixel RGB previews only",
+    "no projected coordinates or CRS",
+    "no source plot or experiment identifiers in released tables",
+    "plot geometry represented only in preview-pixel coordinates",
+    "timeline dates released only as de-identified teaching event rows",
+    "CNN predictions use leave-one-block-out grouped cross-validation"
+  ],
+  "files": {
+    "data/field_plots.csv": {
+      "rows": 12,
+      "sha256": "db97a30dd4b51243d17213ed72b3fbda7f53ebe45d8f34d935c7a8b65c8a6397"
+    },
+    "data/field_events.csv": {
+      "rows": 10,
+      "sha256": "a955390b23f8f6f4ed5c210e984a17e3bee0ceb02b4dee2708ee0da843206c91"
+    },
+    "data/cnn_model_outputs.csv": {
+      "rows": 24,
+      "sha256": "8e6f962bb320af9975f1ef5ca1a248bcf9214c4f90c36ad92b3ea89116cbf90e"
+    },
+    "assets/rgb_early_512.jpg": {
+      "pixels": [
+        512,
+        512
+      ],
+      "sha256": "98c4b4e8af0d2723ab03877b14abecba25f68ae73d2f2c4bd699a07b92c44b6b"
+    },
+    "assets/rgb_late_512.jpg": {
+      "pixels": [
+        512,
+        512
+      ],
+      "sha256": "427737af1fee938fc462a82928abe1b88574fe7422cd960feb8536592e0e669a"
+    }
+  }
+}

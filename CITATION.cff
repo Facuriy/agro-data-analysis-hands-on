@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this teaching repository, please cite it as follows."
+title: "Agro Data Analysis Hands-on"
+type: software
+version: 1.0.0
+date-released: 2026-10-06
+authors:
+  - family-names: "Ispizua Yamati"
+    given-names: "Facundo R."
+repository-code: "https://github.com/Facuriy/agro-data-analysis-hands-on"
+abstract: >-
+  A visual, guided 90-minute Google Colab practical using a small,
+  de-identified real-data subset to teach blocked comparisons, conditional
+  ANCOVA, post hoc reasoning, spatial diagnostics, and grouped CNN evaluation.
