@@ -64,8 +64,21 @@ def compact_student_view(cells: list[nbf.NotebookNode]) -> list[nbf.NotebookNode
             """
         ),
     ]
+    code_titles = iter(
+        [
+            "Setup packages", "Load libraries", "Load released data",
+            "RGB dates", "Plot layout", "Field timeline", "Variable maps",
+            "Plot zooms", "Data audit", "Method map", "Primary model",
+            "Model checks", "Treatment means", "Post hoc map", "Contrasts",
+            "Spatial residuals", "Inspect one CV fold", "Grouped split",
+            "Model scores", "Confusion matrices", "Results vs Discussion",
+        ]
+    )
     for cell in compact:
         if cell.cell_type == "code":
+            # Colab only applies its form view consistently when the source
+            # includes a native @title directive.
+            cell.source = f"# @title {next(code_titles)}\n{cell.source}"
             cell.metadata["tags"] = ["hide-input"]
             cell.metadata["jupyter"] = {"source_hidden": True}
             cell.metadata["cellView"] = "form"

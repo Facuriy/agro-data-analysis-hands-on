@@ -24,7 +24,8 @@
 - [x] Run python scripts/build_notebooks.py.
 - [x] Run python scripts/verify_notebooks.py and require three PASS messages.
 - [x] Execute the student notebook from a clean local environment.
-- [ ] Open the student notebook in Colab and run all cells.
+- [x] Execute the student notebook from a clean temporary folder using only public GitHub data/image URLs.
+- [x] Open the public student notebook in Colab and confirm that all 27 cells load.
 
 ## Visual review
 
