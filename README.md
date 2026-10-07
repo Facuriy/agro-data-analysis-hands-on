@@ -26,7 +26,7 @@ Learn how to:
 - evaluate a CNN using grouped rather than leaky splits;
 - separate Results from Discussion.
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.2.0/Agro_Data_Analysis_Field_to_Evidence.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.2.1/Agro_Data_Analysis_Field_to_Evidence.ipynb)
 
 ## Getting started
 
