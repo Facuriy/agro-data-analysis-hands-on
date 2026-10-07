@@ -1,35 +1,36 @@
-# From field images to scientific evidence
+# The Aluco Evidence Case
 
-A practical, hands-on introduction to agricultural data analysis.
+A visual, hands-on introduction to agricultural data analysis for students
+without programming experience.
 
 The course uses one Google Colab notebook and a small real teaching dataset.
-Students move step by step from RGB field images to experimental design,
-statistical comparison, model checking, spatial interpretation, CNN evaluation,
-and scientific writing.
+Students solve seven short missions: inspect RGB field images, understand the
+experimental design, choose a statistical comparison, check the model, inspect
+space, evaluate a CNN, and write an honest scientific claim.
 
 ## Course notebook
 
-### Agricultural Data Analysis: Look → Compare → Evaluate → Discuss
+### Field → Design → Model → Check → CNN → Claim
 
 Learn how to:
 
 - explore a real field experiment visually;
 - identify treatments, blocks, outcomes and experimental units;
-- choose a statistical method from the scientific question;
-- understand blocked comparisons and conditional ANCOVA;
-- read confidence intervals and post hoc comparisons;
-- check assumptions with diagnostic plots;
+- choose a method from the question, outcome, design and timing;
+- understand a blocked comparison and an ANCOVA sensitivity check;
+- read differences and confidence intervals;
+- check a model using three visual diagnostics;
 - evaluate a CNN without spatial leakage;
 - separate Results from Discussion.
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.0.0/Agro_Data_Analysis_Field_to_Evidence.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.1.0/Agro_Data_Analysis_Field_to_Evidence.ipynb)
 
 ## Getting started
 
 1. Open the notebook using the Colab button above.
 2. Sign in to a Google account if prompted.
-3. Run the cells from top to bottom using ▶ or `Shift + Enter`.
-4. Read the short explanations and answer each question before continuing.
+3. Run the cells from top to bottom using ▶.
+4. Predict first, inspect the graph, and make one decision per mission.
 5. Use **Runtime → Run all** if you want to reproduce the complete analysis.
 
 No local Python installation is required. The notebook downloads the released
@@ -52,7 +53,7 @@ making claims about other cultivars, fields or seasons.
 
 - a computer with internet access;
 - a Google account for Google Colab;
-- basic Python familiarity;
+- no previous programming experience;
 - curiosity about agricultural experiments and scientific evidence.
 
 ## Related course
