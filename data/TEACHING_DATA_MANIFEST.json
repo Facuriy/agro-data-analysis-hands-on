@@ -1,8 +1,8 @@
 {
   "artifact_type": "de-identified real-data educational subset",
   "research_rows_included": 12,
-  "selection_rule": "All 12 Aluco plots; balanced as one plot per treatment in each of four blocks",
-  "selection_status": "Aluco was selected for low Cercospora resistance; all 12 Aluco plots were included, independently of released outcomes",
+  "selection_rule": "All 12 plots of one susceptible variety; balanced as one plot per treatment in each of four blocks",
+  "selection_status": "The variety was selected for low Cercospora resistance; all 12 plots were included independently of released outcomes",
   "rights_status": "Owner-authorized educational release; attribution required; complete source data not licensed",
   "analysis_timing_note": "The 2020-06-26 RGB date is two days after recorded canopy closure/inoculation timing and is the date of the first fungicide application; within-day order is unknown, so early_green_share is not a clean pretreatment baseline",
   "rgb_dates": [

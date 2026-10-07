@@ -4,17 +4,17 @@ Small de-identified real-data subset for one 90-minute class.
 
 ## field_plots.csv
 
-All twelve plots from cultivar Aluco: 4 blocks × 3 treatments. Aluco was chosen
-for its low resistance to Cercospora leaf spot, independently of the released
-sugar values, RGB appearance, or statistical significance. The subset therefore
-answers a within-Aluco teaching question; it is not representative of all
-cultivars.
+All twelve plots from one susceptible sugar-beet variety: 4 blocks × 3
+treatments. The variety was chosen for its low resistance to Cercospora leaf
+spot, independently of the released sugar values, RGB appearance, or
+statistical significance. The subset answers a within-variety teaching
+question; it is not representative of all varieties.
 
 | Field | Meaning |
 |---|---|
 | plot_id | anonymous ID P01–P12 |
 | block | block 1–4 |
-| treatment | Control, Fungicide, or Inoculated |
+| treatment | Control (neither deliberate inoculation nor fungicide), Fungicide (recorded fungicide program), or Inoculated (deliberate inoculation without fungicide) |
 | early_green_share | green-pixel share from the June display preview; post-inoculation and same date as the first fungicide application, so not a clean baseline covariate |
 | late_green_share | green-pixel share from the September display preview |
 | severity_sep04 | real ordinal plot field score from 2020-09-04 |

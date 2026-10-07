@@ -1,16 +1,17 @@
-# The Aluco Evidence Case
+# Evidence Lab: the susceptible variety
 
 A visual, hands-on introduction to agricultural data analysis for students
 without programming experience.
 
 The course uses one Google Colab notebook and a small real teaching dataset.
-Students solve seven short missions: inspect RGB field images, understand the
-experimental design, choose a statistical comparison, check the model, inspect
-space, evaluate a CNN, and write an honest scientific claim.
+Students make predictions, alter the analysis, and inspect what breaks. The
+activities include treatment identification from real RGB crops,
+pseudoreplication, an exact randomization test, leave-one-plot-out sensitivity,
+correlation within and between groups, spatial checks, and optional CNN evaluation.
 
 ## Course notebook
 
-### Field → Design → Model → Check → CNN → Claim
+### Image → Unit → Randomize → Compare → Break → Check → Defend
 
 Learn how to:
 
@@ -20,18 +21,20 @@ Learn how to:
 - understand a blocked comparison and an ANCOVA sensitivity check;
 - read differences and confidence intervals;
 - check a model using three visual diagnostics;
-- evaluate a CNN without spatial leakage;
+- see how pseudoreplication creates fake precision;
+- enumerate all 1,296 treatment assignments permitted by the block design;
+- evaluate a CNN using grouped rather than leaky splits;
 - separate Results from Discussion.
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.1.0/Agro_Data_Analysis_Field_to_Evidence.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.2.0/Agro_Data_Analysis_Field_to_Evidence.ipynb)
 
 ## Getting started
 
 1. Open the notebook using the Colab button above.
 2. Sign in to a Google account if prompted.
 3. Run the cells from top to bottom using ▶.
-4. Predict first, inspect the graph, and make one decision per mission.
-5. Use **Runtime → Run all** if you want to reproduce the complete analysis.
+4. Use the dropdowns and sliders before revealing each result.
+5. Do not use **Run all** during class: the prediction–experiment–reveal order is intentional.
 
 No local Python installation is required. The notebook downloads the released
 course data automatically.
@@ -39,11 +42,12 @@ course data automatically.
 ## What is included
 
 - one self-guided notebook in English;
-- all 12 Aluco plots from four blocks and three treatments;
+- all 12 plots of one susceptible variety from four blocks and three treatments;
 - two real, reduced RGB field previews;
 - a ten-event agronomic timeline;
 - sugar, root-weight, severity and image-derived teaching variables;
-- 24 grouped cross-validation predictions from a small CNN.
+- 24 grouped cross-validation predictions from a small CNN;
+- a small versioned helper module used by the single student notebook.
 
 The data form a deliberately small educational subset. They are suitable for
 learning the analysis workflow, not for replacing the complete experiment or
