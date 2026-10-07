@@ -167,6 +167,17 @@ class EvidenceLab:
     # ------------------------------------------------------------------
     # Field and image activities
     # ------------------------------------------------------------------
+    def opening_field(self) -> None:
+        fig, ax = plt.subplots(figsize=(11, 4.4))
+        self._rgb_axis(
+            ax,
+            self.rgb_late,
+            "polygon_late_px",
+            "FIRST LOOK · September RGB orthomosaic · no labels yet",
+        )
+        plt.tight_layout()
+        plt.show()
+
     def mystery_plots(self) -> None:
         fig, axes = plt.subplots(1, 3, figsize=(12, 3.3))
         for label, ax, row in zip("ABC", axes, self._mystery.itertuples()):
