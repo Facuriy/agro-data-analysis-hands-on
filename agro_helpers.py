@@ -30,8 +30,7 @@ from matplotlib.colors import Normalize, TwoSlopeNorm
 from matplotlib.patches import Polygon
 from PIL import Image
 from IPython.display import display
-from scipy.stats import binomtest
-from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, f1_score
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GroupKFold, StratifiedKFold, cross_val_predict
@@ -412,9 +411,9 @@ class EvidenceLab:
             "Fungicide": "higher" if contrasts.iloc[0].difference > 0 else "lower",
             "Inoculated": "higher" if contrasts.iloc[1].difference > 0 else "lower",
         }
-        if fungicide_guess:
+        if fungicide_guess in {"higher", "equal", "lower"}:
             print(f"Your Fungicide prediction: {fungicide_guess} · observed: {actual['Fungicide']}")
-        if inoculated_guess:
+        if inoculated_guess in {"higher", "equal", "lower"}:
             print(f"Your Inoculated prediction: {inoculated_guess} · observed: {actual['Inoculated']}")
         return contrasts
 
@@ -615,10 +614,17 @@ class EvidenceLab:
         counts = []
         for date, group in groups:
             correct = int(group.correct.sum())
-            p_value = float(binomtest(correct, len(group), 1 / len(ORDER), alternative="greater").pvalue)
             counts.append(correct)
-            summary.append({"date": date, "correct": correct, "n": len(group), "accuracy": correct / len(group),
-                            "exact p vs 1/3": p_value})
+            summary.append(
+                {
+                    "date": date,
+                    "correct": correct,
+                    "n": len(group),
+                    "accuracy": correct / len(group),
+                    "macro F1": f1_score(group.true_class, group.cnn_prediction, labels=ORDER, average="macro"),
+                    "chance reference": 1 / len(ORDER),
+                }
+            )
         ax0.bar(range(len(groups)), counts, color=["#9ECAE1", "#0072B2"], width=.6)
         for position, (correct, (_, group)) in enumerate(zip(counts, groups)):
             ax0.text(position, correct + .25, f"{correct}/{len(group)}", ha="center", weight="bold", fontsize=13)
@@ -686,17 +692,28 @@ class EvidenceLab:
         return power
 
     @staticmethod
-    def score_quiz(answers: dict[str, str], pre_answers: dict[str, str] | None = None) -> int:
+    def score_quiz(answers: dict[str, str]) -> int:
         key = {
             "unit": "field plot",
             "baseline": "no",
             "pvalue": "data compatibility under the null model",
-            "cnn_split": "whole field block",
             "correlation": "no",
+            "claim": "treatment differences in this experiment",
         }
-        score = sum(str(answers.get(question, "")).lower() == expected for question, expected in key.items())
+        labels = {
+            "unit": "Experimental unit",
+            "baseline": "Clean June baseline",
+            "pvalue": "Meaning of p-value",
+            "correlation": "Correlation proves cause",
+            "claim": "Supported claim",
+        }
+        correct = {
+            question: str(answers.get(question, "")).lower() == expected
+            for question, expected in key.items()
+        }
+        score = sum(correct.values())
         print(f"Score: {score}/{len(key)}")
-        if pre_answers is not None:
-            pre_score = sum(str(pre_answers.get(question, "")).lower() == expected for question, expected in key.items())
-            print(f"Pre-course score: {pre_score}/{len(key)} · change: {score - pre_score:+d}")
+        for question, expected in key.items():
+            symbol = "✅" if correct[question] else "↻"
+            print(f"{symbol} {labels[question]}: {expected}")
         return score
