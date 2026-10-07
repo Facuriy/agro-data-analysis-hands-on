@@ -5,9 +5,10 @@ without programming experience.
 
 The course uses one Google Colab notebook and a small real teaching dataset.
 Students make predictions, alter the analysis, and inspect what breaks. The
-activities include treatment identification from real RGB crops,
-pseudoreplication, an exact randomization test, leave-one-plot-out sensitivity,
-correlation within and between groups, spatial checks, and optional CNN evaluation.
+activities include treatment identification from real RGB crops, selectable RGB
+vegetation indices and green-pixel change, pseudoreplication, an exact
+randomization test, leave-one-plot-out sensitivity, correlation within and
+between groups, spatial checks, and optional CNN evaluation.
 
 ## Course notebook
 
@@ -16,6 +17,8 @@ correlation within and between groups, spatial checks, and optional CNN evaluati
 Learn how to:
 
 - explore a real field experiment visually;
+- compare ExG, GLI and NGRDI maps, colour scales and display normalization;
+- calculate a two-date green-preview-pixel proxy with one shared threshold;
 - identify treatments, blocks, outcomes and experimental units;
 - choose a method from the question, outcome, design and timing;
 - understand a blocked comparison and an ANCOVA sensitivity check;
@@ -26,7 +29,7 @@ Learn how to:
 - evaluate a CNN using grouped rather than leaky splits;
 - separate Results from Discussion.
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.2.3/Agro_Data_Analysis_Field_to_Evidence.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Facuriy/agro-data-analysis-hands-on/blob/v2.2.4/Agro_Data_Analysis_Field_to_Evidence.ipynb)
 
 ## Getting started
 

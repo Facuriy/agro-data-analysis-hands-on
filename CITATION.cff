@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this teaching repository, please cite it as follows."
 title: "Agro Data Analysis Hands-on"
 type: software
-version: 2.2.3
+version: 2.2.4
 date-released: 2026-10-07
 authors:
   - family-names: "Ispizua Yamati"

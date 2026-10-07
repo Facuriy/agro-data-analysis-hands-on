@@ -27,7 +27,9 @@ import statsmodels.formula.api as smf
 
 from matplotlib.collections import PatchCollection
 from matplotlib.colors import Normalize, TwoSlopeNorm
+from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
+from matplotlib.path import Path as MplPath
 from PIL import Image
 from IPython.display import display
 from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, f1_score
@@ -115,6 +117,59 @@ class EvidenceLab:
         x1, y1 = min(x1, image.shape[1]), min(y1, image.shape[0])
         return image[y0:y1, x0:x1]
 
+    def _plot_crop_and_mask(self, image: np.ndarray, polygon: str, pad: int = 3) -> tuple[np.ndarray, np.ndarray]:
+        points = _points(polygon)
+        x0, y0 = np.floor(points.min(axis=0) - pad).astype(int)
+        x1, y1 = np.ceil(points.max(axis=0) + pad).astype(int)
+        x0, y0 = max(x0, 0), max(y0, 0)
+        x1, y1 = min(x1, image.shape[1]), min(y1, image.shape[0])
+        crop = image[y0:y1, x0:x1]
+        xx, yy = np.meshgrid(np.arange(x0, x1) + .5, np.arange(y0, y1) + .5)
+        mask = MplPath(points).contains_points(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+        return crop, mask
+
+    @staticmethod
+    def _vegetation_index(rgb: np.ndarray, name: str) -> np.ndarray:
+        scaled = rgb.astype(float) / 255
+        red, green, blue = scaled[..., 0], scaled[..., 1], scaled[..., 2]
+        if name == "ExG":
+            return 2 * green - red - blue
+        if name == "GLI":
+            return (2 * green - red - blue) / (2 * green + red + blue + 1e-9)
+        if name == "NGRDI":
+            return (green - red) / (green + red + 1e-9)
+        raise ValueError(f"Unknown RGB index: {name}")
+
+    @staticmethod
+    def _otsu_threshold(values: np.ndarray) -> float:
+        finite = np.asarray(values, dtype=float)
+        finite = finite[np.isfinite(finite)]
+        if finite.size == 0 or np.ptp(finite) == 0:
+            return float(finite[0]) if finite.size else 0.0
+        counts, edges = np.histogram(finite, bins=256)
+        centers = (edges[:-1] + edges[1:]) / 2
+        weights_left = np.cumsum(counts)
+        weights_right = finite.size - weights_left
+        sums_left = np.cumsum(counts * centers)
+        means_left = sums_left / np.maximum(weights_left, 1)
+        means_right = (sums_left[-1] - sums_left) / np.maximum(weights_right, 1)
+        score = weights_left * weights_right * (means_left - means_right) ** 2
+        score[(weights_left == 0) | (weights_right == 0)] = -np.inf
+        return float(centers[int(np.nanargmax(score))])
+
+    @staticmethod
+    def _display_limits(values: np.ndarray, index_name: str, normalization: str) -> tuple[float, float]:
+        finite = np.asarray(values)[np.isfinite(values)]
+        if normalization == "fixed index range":
+            return (-2.0, 2.0) if index_name == "ExG" else (-1.0, 1.0)
+        if normalization == "crop min–max":
+            low, high = np.min(finite), np.max(finite)
+        else:
+            low, high = np.quantile(finite, [.02, .98])
+        if np.isclose(low, high):
+            low, high = low - .01, high + .01
+        return float(low), float(high)
+
     def _field_limits(self, polygon_column: str) -> tuple[float, float, float, float]:
         points = np.vstack([_points(value) for value in self.field[polygon_column]])
         xmin, ymin = points.min(axis=0)
@@ -177,6 +232,41 @@ class EvidenceLab:
         plt.tight_layout()
         plt.show()
 
+    def experiment_overview(self) -> pd.DataFrame:
+        fig, axes = plt.subplots(1, 2, figsize=(12, 4.4))
+        panels = [
+            (axes[0], self.rgb_early, "polygon_early_px", "26 June 2020 · 81 DAS"),
+            (axes[1], self.rgb_late, "polygon_late_px", "03 September 2020 · 150 DAS"),
+        ]
+        for ax, image, polygon_column, title in panels:
+            self._rgb_axis(ax, image, polygon_column, title)
+            for row in self.field.itertuples():
+                points = _points(getattr(row, polygon_column))
+                ax.add_patch(
+                    Polygon(points, fill=False, edgecolor=COLORS[str(row.treatment)], linewidth=1.8)
+                )
+                center = points[:-1].mean(axis=0)
+                ax.text(*center, row.plot_id, ha="center", va="center", fontsize=7,
+                        weight="bold", color="white")
+        legend = [
+            Line2D([0], [0], color=COLORS[name], lw=3, label=name)
+            for name in ORDER
+        ]
+        fig.legend(handles=legend, frameon=False, loc="lower center", ncol=3,
+                   bbox_to_anchor=(.5, -.01), fontsize=9)
+        fig.suptitle("EXPERIMENT INVENTORY · 12 plots · 4 blocks · 3 treatment types · 2 RGB dates",
+                     fontsize=16, weight="bold")
+        plt.tight_layout(rect=(0, .07, 1, .9))
+        plt.show()
+
+        counts = pd.crosstab(self.field.block, self.field.treatment).reindex(columns=ORDER)
+        counts["Total"] = counts.sum(axis=1)
+        counts.loc["Total"] = counts.sum(axis=0)
+        display(counts.style.set_caption("Plots per block and treatment"))
+        print("Each block contains one Control, one Fungicide and one Inoculated plot.")
+        print("DAS = days after sowing. These JPEG previews were stretched separately for display.")
+        return counts
+
     def mystery_plots(self) -> None:
         fig, axes = plt.subplots(1, 3, figsize=(12, 3.3))
         for label, ax, row in zip("ABC", axes, self._mystery.itertuples()):
@@ -232,6 +322,104 @@ class EvidenceLab:
         print(f"Released green-share descriptor:                 {released:.3f}")
         print("They are related descriptors, not identical pipelines; the JPEG is display-stretched.")
         return mean_exg
+
+    def vegetation_index_lab(
+        self,
+        plot_id: str = "P03",
+        date: str = "September",
+        index_name: str = "ExG",
+        palette: str = "RdYlGn",
+        normalization: str = "robust 2–98%",
+        green_rule: str = "index > 0",
+    ) -> dict[str, float]:
+        row = self.field.loc[self.field.plot_id.eq(plot_id)].iloc[0]
+        early = date == "June"
+        image = self.rgb_early if early else self.rgb_late
+        polygon = row.polygon_early_px if early else row.polygon_late_px
+        crop, mask = self._plot_crop_and_mask(image, polygon)
+        index_map = self._vegetation_index(crop, index_name)
+        values = index_map[mask]
+        threshold = 0.0 if green_rule == "index > 0" else self._otsu_threshold(values)
+        green = (index_map > threshold) & mask
+        green_share = float(green.sum() / mask.sum())
+        vmin, vmax = self._display_limits(values, index_name, normalization)
+
+        fig, axes = plt.subplots(1, 3, figsize=(13, 3.8))
+        axes[0].imshow(crop, interpolation="nearest")
+        axes[0].set_title(f"{plot_id} · {date} RGB")
+        mapped = axes[1].imshow(np.where(mask, index_map, np.nan), cmap=palette, vmin=vmin, vmax=vmax)
+        axes[1].set_title(f"{index_name} · {normalization}")
+        fig.colorbar(mapped, ax=axes[1], shrink=.72, label=index_name)
+        axes[2].imshow(green, cmap="Greens", vmin=0, vmax=1, interpolation="nearest")
+        axes[2].set_title(f"Green pixels · {green_share:.1%}")
+        for ax in axes:
+            ax.set_xticks([])
+            ax.set_yticks([])
+        fig.suptitle("RGB → VEGETATION INDEX → GREEN-PIXEL RULE", fontsize=16, weight="bold")
+        plt.tight_layout(rect=(0, 0, 1, .9))
+        plt.show()
+        print(f"Threshold: {threshold:.3f} · green preview pixels: {green.sum():,}/{mask.sum():,}")
+        print("Palette and normalization change the display—not the index values or green-pixel rule.")
+        return {"threshold": threshold, "green_pixels": int(green.sum()),
+                "plot_pixels": int(mask.sum()), "green_share": green_share}
+
+    def green_area_change(
+        self,
+        plot_id: str = "P03",
+        index_name: str = "ExG",
+        threshold_rule: str = "shared Otsu threshold",
+    ) -> pd.DataFrame:
+        row = self.field.loc[self.field.plot_id.eq(plot_id)].iloc[0]
+        panels = []
+        for date, image, polygon in [
+            ("June", self.rgb_early, row.polygon_early_px),
+            ("September", self.rgb_late, row.polygon_late_px),
+        ]:
+            crop, mask = self._plot_crop_and_mask(image, polygon)
+            index_map = self._vegetation_index(crop, index_name)
+            panels.append({"date": date, "crop": crop, "mask": mask,
+                           "index": index_map, "values": index_map[mask]})
+
+        pooled = np.concatenate([panel["values"] for panel in panels])
+        threshold = 0.0 if threshold_rule == "index > 0" else self._otsu_threshold(pooled)
+        rows = []
+        fig, axes = plt.subplots(1, 3, figsize=(13, 3.8), gridspec_kw={"width_ratios": [1, 1, .8]})
+        for ax, panel in zip(axes[:2], panels):
+            green = (panel["index"] > threshold) & panel["mask"]
+            share = float(green.sum() / panel["mask"].sum())
+            overlay = np.zeros((*green.shape, 4))
+            overlay[..., 1] = 1
+            overlay[..., 3] = green.astype(float) * .42
+            ax.imshow(panel["crop"], interpolation="nearest")
+            ax.imshow(overlay, interpolation="nearest")
+            ax.set_title(f"{panel['date']} · green proxy {share:.1%}")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            rows.append({"date": panel["date"], "plot pixels": int(panel["mask"].sum()),
+                         "green pixels": int(green.sum()), "green share": share})
+        result = pd.DataFrame(rows)
+        june, september = result["green share"].to_numpy()
+        loss = june - september
+        axes[2].bar(["June", "September"], [june, september], color=["#56B4E9", "#009E73"])
+        axes[2].set_ylim(0, 1)
+        axes[2].set_ylabel("Green preview-pixel share")
+        direction = "Loss" if loss >= 0 else "Gain"
+        axes[2].set_title(
+            f"Change: {(september - june) * 100:+.1f} pp\n{direction}: {abs(loss) * 100:.1f} pp"
+        )
+        for position, value in enumerate([june, september]):
+            axes[2].text(position, value + .035, f"{value:.1%}", ha="center", weight="bold")
+        sns.despine(ax=axes[2])
+        fig.suptitle(f"GREEN-AREA PROXY · {plot_id} · {index_name} · one shared threshold",
+                     fontsize=16, weight="bold")
+        plt.tight_layout(rect=(0, 0, 1, .88))
+        plt.show()
+        display(result.style.format({"green share": "{:.1%}"}).hide(axis="index"))
+        direction = "loss" if loss >= 0 else "gain"
+        print(f"Preview estimate: {abs(loss) * 100:.1f} percentage-point {direction} from June to September.")
+        print("Teaching limit: pixels are not square metres, and the two JPEGs were stretched separately.")
+        print("Do not report this as calibrated canopy-area loss.")
+        return result
 
     def evidence_maps(self) -> None:
         specifications = [
